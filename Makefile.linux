@@ -1,0 +1,17 @@
+CC=gcc
+CFLAGS= -g #-Wall -Wextra -Werror
+LIBS=-L./minilibx-linux -lmlx -lX11 -lXext
+TARGET=cub3D
+SRC := $(shell find . -name "*.c" ! -path "./minilibx-linux/*")
+all: $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRC) $(LIBS)
+
+clean:
+	rm -f $(TARGET)
+
+re : clean all
+.PHONY: all run clean
+
+#add for macos
