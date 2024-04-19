@@ -44,50 +44,70 @@ void    get_map_copy(t_data *data)
     close(data->copymap.fd);
 }
 
+
+// is_digit, is_print, whitespace geçileecek control altında işlem yapılacak.
 void    get_info_on_cub_file(t_data *data)
 {
     int i;
-    char **split;
+    int x;
+    int except_newline;
+    char **temp_split;
     char *line;
 
     i = 0;
-    while (i < data->copymap.total_line_count)
+    x = 0;
+    except_newline = 0;
+    while (data->copymap.copied_file[i][x] == ' '
+            || data->copymap.copied_file[i][x] == '\t'
+            || data->copymap.copied_file[i][x] == '\n')
+        x++;
+    i = 0;
+    x = 0;
+    while (i < data->copymap.total_line_count
+        && is_print_and_is_digit(data, i, x))
     {
         line = data->copymap.copied_file[i];
-        split = ft_split(line, ' ');
-        if (split[0] == NULL)
+        temp_split = ft_split(line, ' ');
+        if (temp_split[0] == NULL)
         {
-            free(split);
+            free(temp_split);
             i++;
             continue;
         }
-        if (ft_strncmp(split[0], "NO", 2) == 0)
-            data->cub_info.north = ft_strdup(split[1]);
-        else if (ft_strncmp(split[0], "SO", 2) == 0)
-            data->cub_info.south = ft_strdup(split[1]);
-        else if (ft_strncmp(split[0], "WE", 2) == 0)
-            data->cub_info.west = ft_strdup(split[1]);
-        else if (ft_strncmp(split[0], "EA", 2) == 0)
-            data->cub_info.east = ft_strdup(split[1]);
-        else if (ft_strncmp(split[0], "F", 1) == 0)
-            data->cub_info.floor = ft_atoi(split[1]);
-        else if (ft_strncmp(split[0], "C", 1) == 0)
-            data->cub_info.ceiling = ft_atoi(split[1]);
-        free(split);
+        if (ft_strncmp(temp_split[0], "NO", 2) == 0)
+            data->cub_info.north = ft_strndup(temp_split[1], ft_strlen(temp_split[1])
+                - except_newline);
+        else if (ft_strncmp(temp_split[0], "SO", 2) == 0)
+            data->cub_info.south = ft_strndup(temp_split[1], ft_strlen(temp_split[1])
+                - except_newline);
+        else if (ft_strncmp(temp_split[0], "WE", 2) == 0)
+            data->cub_info.west = ft_strndup(temp_split[1], ft_strlen(temp_split[1])
+                - except_newline);
+        else if (ft_strncmp(temp_split[0], "EA", 2) == 0)
+            data->cub_info.east = ft_strndup(temp_split[1], ft_strlen(temp_split[1])
+                - except_newline);
+        get_color_info(temp_split, data);
+        free(temp_split);
         i++;
     }
-    //printf all direction 
 
-    printf("north: %s\n", data->cub_info.north);
-    printf("south: %s\n", data->cub_info.south);
-    printf("west: %s\n", data->cub_info.west);
-    printf("east: %s\n", data->cub_info.east);
-    printf("floor: %d\n", data->cub_info.floor);
-    printf("ceiling: %d\n", data->cub_info.ceiling);
+    printf("north: %s", data->cub_info.north);
+    printf("south: %s", data->cub_info.south);
+    printf("west: %s", data->cub_info.west);
+    printf("east: %s", data->cub_info.east);
+    printf("floor: %d \n", data->cub_info.floor);
+    printf("ceiling: %d \n", data->cub_info.ceiling);
 
 }
 
-void    parsing_cub_file(t_data *data)
+
+void get_color_info(char **temp_split, t_data *data)
+{
+    //F and C parse
+}
+
+
+void parsing_cub_file(t_data *data)
 {
     total_line_of_cub_file(data);
     get_map_copy(data);

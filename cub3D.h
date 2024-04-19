@@ -38,8 +38,8 @@ typedef struct s_cub_info
     char    *south;
     char    *west;
     char    *east;
-    int     floor;
-    int     ceiling;
+    int     *floor;
+    int     *ceiling;
 
 } t_cub_info ;
 
@@ -56,6 +56,7 @@ typedef struct s_data
     void    *win;
     char    **map;
     char    *map_path;
+    int     **texture_color_array;
     t_cub_info  cub_info;
     t_copymap   copymap;
 } t_data ;
@@ -78,6 +79,10 @@ void check_map_file_validity(char *str);
 /*
 * parsing the cub file
 */
-void    parsing_cub_file(t_data *data);
+void parsing_cub_file(t_data *data);
+
+void get_color_info(char **temp_split, t_data *data);
+
+int is_print_and_is_digit(t_data *data, int i, int x);
 
 #endif
